@@ -1,5 +1,5 @@
 """
-cron: 0 5 * * *
+cron: 1 0 * * *
 new Env('充电计划');
 """
 
@@ -31,9 +31,10 @@ def start_charge(interfaceId):
     }
     response = requests.post(f"https://miniapp.echengchong.com/serviceCharge/startCharge?{auth}&appplat=11&appver=138", json=data)
     data = response.json()
+    print(data)
     if data.get("code")==1:
         print("获取服务ID成功")
-        data = query_start_charge(charge_info["interface_id"], data["data"]["serviceId"])
+        data = query_start_charge(interfaceId, data["data"]["serviceId"])
     else:
         print(data)
     send("充电计划",data)
@@ -50,6 +51,7 @@ def query_start_charge(interface_id, service_id):
         }
         response = requests.post(f"https://miniapp.echengchong.com/serviceCharge/queryStartCharge?{auth}&appplat=11&appver=138", json=data)
         data = response.json()
+        print(data)
         if data["code"] != 302:
             print(data["msg"])
             return data["msg"]
@@ -63,9 +65,9 @@ if __name__=="__main__":
         charge_info = json.loads(os.getenv("charge"))
         timestamp = int(time.time())
         if timestamp - charge_info["time"] < 600:
-            print(charge_info["allName"]+charge_info["name"]+"枪充电启动中，请稍后....")
+            print(charge_info["allName"]+charge_info["name"]+"枪口充电启动中，请稍后....")
             auth = charge_info["token"]
-            start_charge(charge_info["interface_id"])
+            start_charge(charge_info["interfaceId"])
         else:
             print("非预定充电时间，退出！")
     else:

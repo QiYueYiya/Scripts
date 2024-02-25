@@ -43,7 +43,7 @@ def login():
     response = requests.get(url+path, params=params, headers=headers)
     if response.status_code==200:
         print(response.json().get("message"))
-        with open("china_iplist.txt", "w") as file:
+        with open("appshare_token.txt", "w") as file:
             file.write(info["token"])
         return info["token"]
     else:
